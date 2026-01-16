@@ -1,0 +1,7 @@
+{
+  "name": "Petal & Prose - AI Floral Designer",
+  "description": "A premium floral SaaS platform featuring an AI-assisted bouquet builder and mix-and-match customization engine.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
