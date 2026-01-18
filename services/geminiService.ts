@@ -1,104 +1,131 @@
 
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI, Type, Modality } from "@google/genai";
 import { FLOWER_CATALOG } from "../constants";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
-
-const catalogKnowledge = FLOWER_CATALOG.map(f => `${f.name} (ID: ${f.id}, Meaning: ${f.meaning})`).join("; ");
+// Catalog context for the model
+const catalogKnowledge = FLOWER_CATALOG.map(f => `${f.name} (ID: ${f.id}, Style: ${f.subCategory})`).join("; ");
 
 const SYSTEM_INSTRUCTION = `
-You are Iris, the Elite Floral Architect for "Petal & Prose". You are a mentor, not just a chatbot. Your goal is to guide the user from a blank canvas to a professional-grade masterpiece.
+You are Iris, the Premier Concierge & Floral Architect for "Petal & Prose". You are an elite mentor for high-end floral design.
 
-YOUR DESIGN PHILOSOPHY:
-- Thrillers: Large, eye-catching focal blooms (Roses, Peonies, Sunflowers).
-- Fillers: Mid-sized flowers that bridge gaps (Hydrangeas, Lilies).
-- Spillers/Greenery: Elements that break the border and add movement (Eucalyptus, Lavender).
+CORE PHILOSOPHY:
+1. Proportion: Thrillers (focal), Fillers (volume), Spillers (movement).
+2. Balance: Asymmetrical balance is often more elegant than perfect symmetry.
+3. Palette: Guide users toward harmonious color stories (Monochromatic, Analogous, Complementary).
 
-YOUR CAPABILITIES:
-- Analyze the user's current bouquet for "Balance" and "Flow".
-- Suggest specific stems from our catalog: ${catalogKnowledge}.
-- Instruct users on using Studio Tools: 2D/3D toggle, Rotation Sliders, Depth Layering, and AI Finish Engine.
+YOUR SPECIAL CAPABILITIES:
+- If an image is provided, perform a Visual Audit: critique specific positioning, scale, and color clusters.
+- Use technical terminology (Ikebana principles, Negative space, Focal points).
+- Recommend exactly 2-4 items from our catalog for current needs: ${catalogKnowledge}.
 
-RESPONSE PROTOCOL:
-- Be encouraging, sophisticated, and technical.
-- Always provide a designChecklist: a 3-step actionable roadmap.
-- Provide a toolTip that links a floral concept to a specific UI control in the app.
+RESPONSE FORMAT:
+You MUST return a JSON object with:
+- suggestion (string): High-level artisan vision.
+- deepAnalysis (string): Technical breakdown of the composition.
+- recommendedFlowerIds (string[]): Array of flower IDs from the catalog.
+- designScore (number): 0-100 rating of current composition.
+- nextStep (string): The single most important next action.
+- toolTip (string): UI guidance.
 `;
 
-export const getFloralAdvice = async (userPrompt: string, currentBouquetState?: string) => {
+// Helper to get Iris's architectural response
+export const getIrisResponse = async (userPrompt: string, studioState?: string, base64Image?: string) => {
   try {
-    const contextPrompt = currentBouquetState 
-      ? `Analysis Request: "${userPrompt}". \nCurrent Studio State: ${currentBouquetState}. \nCritique the arrangement and provide a roadmap to excellence.`
-      : `New Inquiry: "${userPrompt}". Help them conceptualize a new arrangement from scratch using professional design theory.`;
+    // Guidelines: Always create a new GoogleGenAI instance before calling an API.
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    
+    const parts: any[] = [{ text: `User: ${userPrompt}\nStudio Configuration: ${studioState}` }];
+    
+    if (base64Image) {
+      parts.push({
+        inlineData: {
+          mimeType: "image/png",
+          data: base64Image.split(',')[1]
+        }
+      });
+    }
 
     const response = await ai.models.generateContent({
       model: "gemini-3-pro-preview",
-      contents: contextPrompt,
+      contents: { parts },
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,
-        thinkingConfig: { thinkingBudget: 2000 },
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.OBJECT,
           properties: {
-            suggestion: { type: Type.STRING, description: "A professional critique or encouraging vision." },
-            designAnalysis: { type: Type.STRING, description: "Deep dive into the composition (color, shape, balance)." },
-            recommendedFlowers: { 
-              type: Type.ARRAY, 
-              items: { type: Type.STRING },
-              description: "Specific flower names from the catalog."
-            },
-            designChecklist: {
-              type: Type.ARRAY,
-              items: { type: Type.STRING },
-              description: "3 actionable steps to improve the design."
-            },
-            toolTip: { 
-              type: Type.STRING, 
-              description: "Direct instruction for a UI element (e.g. 'Switch to 3D View to check the Z-space depth')." 
-            },
-            colorPalette: { type: Type.ARRAY, items: { type: Type.STRING } },
-            mood: { type: Type.STRING }
+            suggestion: { type: Type.STRING },
+            deepAnalysis: { type: Type.STRING },
+            recommendedFlowerIds: { type: Type.ARRAY, items: { type: Type.STRING } },
+            designScore: { type: Type.NUMBER },
+            nextStep: { type: Type.STRING },
+            toolTip: { type: Type.STRING }
           },
-          required: ["suggestion", "designAnalysis", "recommendedFlowers", "designChecklist", "toolTip"]
+          required: ["suggestion", "deepAnalysis", "recommendedFlowerIds", "designScore", "nextStep", "toolTip"]
         }
       }
     });
+
     return JSON.parse(response.text);
   } catch (error) {
-    console.error("Iris Agent Error:", error);
+    console.error("Iris Studio Error:", error);
     return null;
   }
 };
 
-export const getPairingSuggestions = async (currentFlowerNames: string[]) => {
-  if (currentFlowerNames.length === 0) return null;
+// Helper to generate Iris's voice output
+export const getIrisVoice = async (text: string) => {
   try {
+    // Guidelines: Always create a new GoogleGenAI instance before calling an API.
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash-preview-tts",
+      contents: [{ parts: [{ text: `Speak in a warm, sophisticated, encouraging professional tone: ${text}` }] }],
+      config: {
+        responseModalities: [Modality.AUDIO],
+        speechConfig: {
+          voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } }
+        }
+      }
+    });
+
+    const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+    return base64Audio;
+  } catch (error) {
+    console.error("Voice Generation Error:", error);
+    return null;
+  }
+};
+
+// Helper to get sophisticated color palette suggestions
+export const getPaletteSuggestions = async (currentFlowerNames: string[]) => {
+  try {
+    // Guidelines: Always create a new GoogleGenAI instance before calling an API.
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
-      contents: `Suggest pairings for: ${currentFlowerNames.join(", ")}.`,
+      contents: `Perform a color theory analysis for this bouquet: ${currentFlowerNames.join(", ")}. Suggest a harmonious palette, a ribbon hex, a wrap type, and a recommended studio background ambiance hex color.`,
       config: {
-        systemInstruction: SYSTEM_INSTRUCTION,
+        systemInstruction: "You are Iris, the elite color theorist for Petal & Prose. Provide sophisticated, high-end color advice.",
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.OBJECT,
           properties: {
-            pairings: {
-              type: Type.ARRAY,
-              items: {
-                type: Type.OBJECT,
-                properties: {
-                  name: { type: Type.STRING },
-                  reason: { type: Type.STRING }
-                }
-              }
-            }
-          }
+            palette: { type: Type.ARRAY, items: { type: Type.STRING }, description: "5 hex colors representing the palette." },
+            ribbonColor: { type: Type.STRING, description: "Single hex color for the ribbon." },
+            wrapType: { type: Type.STRING, enum: ["paper", "burlap", "silk", "jute", "organza", "none"] },
+            backgroundHex: { type: Type.STRING, description: "A hex color for the studio background." },
+            reasoning: { type: Type.STRING, description: "Artisan explanation of the palette." }
+          },
+          required: ["palette", "ribbonColor", "wrapType", "backgroundHex", "reasoning"]
         }
       }
     });
     return JSON.parse(response.text);
   } catch (error) {
+    console.error("Palette Suggestion Error:", error);
     return null;
   }
 };

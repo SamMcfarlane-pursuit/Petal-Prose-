@@ -12,10 +12,14 @@ export interface Flower {
   scientificName?: string;
   price: number;
   category: FlowerCategory;
+  subCategory?: string;
   color: string;
   image: string;
   meaning: string;
   stock: number;
+  origin: string;       // New factual field
+  season: string;       // New factual field
+  careInstructions: string; // New factual field
 }
 
 export interface WholesaleTier {
@@ -43,13 +47,14 @@ export interface CustomBouquet {
     flowerId: string;
     quantity: number;
     rotation: number;
+    localRotation3D?: { x: number; y: number };
     scale: number;
     position: { x: number; y: number };
   }[];
   wrapType: 'paper' | 'burlap' | 'silk' | 'jute' | 'organza' | 'none';
   ribbonColor: string;
-  customTexture?: string; // Base64 data for the AI-generated texture
-  textureIntensity?: number; // Opacity value from 0 to 1
+  customTexture?: string;
+  textureIntensity?: number;
 }
 
 export interface CartItem {

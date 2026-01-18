@@ -1,221 +1,126 @@
 
 import { Flower, FlowerCategory, CustomBouquet } from './types';
 
+/**
+ * Professional Botanical Inventory
+ * Curated for 1:1 visual accuracy and high-fidelity image delivery.
+ */
 export const FLOWER_CATALOG: Flower[] = [
-  // --- BLOOMS (Thrillers) ---
+  // --- BLOOMS ---
   {
     id: 'f1',
-    name: 'Red Velvet Rose',
-    scientificName: 'Rosa damascena',
-    price: 4.50,
+    name: 'Sarah Bernhardt Peony',
+    scientificName: 'PAEONIA LACTIFLORA',
+    price: 12.50,
     category: FlowerCategory.BLOOM,
-    color: 'Crimson Red',
-    image: 'https://images.unsplash.com/photo-1548610762-65603720792a?q=80&w=600&h=600&fit=crop',
-    meaning: 'Deep love and passion',
-    stock: 50
+    subCategory: 'Romantic',
+    color: 'Soft Pink',
+    image: 'https://images.unsplash.com/photo-1563241527-3004b7be0fab?auto=format&fit=crop&q=80&w=1200',
+    meaning: 'Healing, romance, and prosperity',
+    stock: 45,
+    origin: 'SOUTH AFRICA',
+    season: 'WINTER / SPRING',
+    careInstructions: 'Keep in cool water; prune leaves below waterline; highly sensitive to heat.'
   },
   {
     id: 'f2',
-    name: 'White Lily',
-    scientificName: 'Lilium candidum',
-    price: 6.00,
+    name: 'Quicksand Rose',
+    scientificName: 'ROSA X HYBRIDA',
+    price: 8.00,
     category: FlowerCategory.BLOOM,
-    color: 'Pure White',
-    image: 'https://images.unsplash.com/photo-1508784411316-02b8cd4d3a3a?q=80&w=600&h=600&fit=crop',
-    meaning: 'Purity and virtue',
-    stock: 30
+    subCategory: 'Modern',
+    color: 'Champagne',
+    image: 'https://images.unsplash.com/photo-1548610762-65603720792a?auto=format&fit=crop&q=80&w=1200',
+    meaning: 'Grace, gratitude, and elegance',
+    stock: 120,
+    origin: 'JAPAN',
+    season: 'SUMMER',
+    careInstructions: 'Trim stems at 45° angle; change water every 2 days; use provided flower food.'
   },
   {
-    id: 'f8',
-    name: 'Pink Peony',
-    scientificName: 'Paeonia lactiflora',
-    price: 9.00,
-    category: FlowerCategory.BLOOM,
-    color: 'Soft Pink',
-    image: 'https://images.unsplash.com/photo-1563241527-3004b7be0fab?q=80&w=600&h=600&fit=crop',
-    meaning: 'Good fortune and honor',
-    stock: 0 // Out of Stock
-  },
-  {
-    id: 'f9',
+    id: 'f7',
     name: 'King Protea',
-    scientificName: 'Protea cynaroides',
+    scientificName: 'PROTEA CYNAROIDES',
     price: 15.00,
     category: FlowerCategory.BLOOM,
+    subCategory: 'Exotic',
     color: 'Dusty Pink',
-    image: 'https://images.unsplash.com/photo-1558221683-f5bf4420808c?q=80&w=600&h=600&fit=crop',
+    image: 'https://images.unsplash.com/photo-1558221683-f5bf4420808c?auto=format&fit=crop&q=80&w=1200',
     meaning: 'Diversity and courage',
-    stock: 10
-  },
-  {
-    id: 'f10',
-    name: 'Cymbidium Orchid',
-    scientificName: 'Cymbidium',
-    price: 12.00,
-    category: FlowerCategory.BLOOM,
-    color: 'Chartreuse',
-    image: 'https://images.unsplash.com/photo-1525310238806-f1941e263832?q=80&w=600&h=600&fit=crop',
-    meaning: 'Luxury and strength',
-    stock: 12
-  },
-  {
-    id: 'f13',
-    name: 'Black Bat Flower',
-    scientificName: 'Tacca chantrieri',
-    price: 18.50,
-    category: FlowerCategory.BLOOM,
-    color: 'Ebony',
-    image: 'https://images.unsplash.com/photo-1596438459194-f275f413d6ff?q=80&w=600&h=600&fit=crop',
-    meaning: 'The exotic and unknown',
-    stock: 5
+    stock: 25,
+    origin: 'SOUTH AFRICA',
+    season: 'WINTER / SPRING',
+    careInstructions: 'High water consumption; maintain deep reservoir; keep in bright, airy spaces.'
   },
 
   // --- FILLERS ---
   {
-    id: 'f3',
-    name: 'Blue Hydrangea',
-    scientificName: 'Hydrangea macrophylla',
-    price: 8.50,
-    category: FlowerCategory.FILLER,
-    color: 'Azure Blue',
-    image: 'https://images.unsplash.com/photo-1507020995383-75bf6423b03a?q=80&w=600&h=600&fit=crop',
-    meaning: 'Heartfelt emotion',
-    stock: 20
-  },
-  {
     id: 'f4',
-    name: 'Baby\'s Breath',
-    scientificName: 'Gypsophila paniculata',
-    price: 2.00,
+    name: 'White Lisianthus',
+    scientificName: 'EUSTOMA GRANDIFLORUM',
+    price: 6.50,
     category: FlowerCategory.FILLER,
-    color: 'Snow White',
-    image: 'https://images.unsplash.com/photo-1582794543139-8ac9cb0f7b11?q=80&w=600&h=600&fit=crop',
-    meaning: 'Everlasting love',
-    stock: 100
-  },
-  {
-    id: 'f14',
-    name: 'Purple Statice',
-    scientificName: 'Limonium sinuatum',
-    price: 3.00,
-    category: FlowerCategory.FILLER,
-    color: 'Deep Purple',
-    image: 'https://images.unsplash.com/photo-1523450001312-faa4e2e31f0f?q=80&w=600&h=600&fit=crop',
-    meaning: 'Remembrance',
-    stock: 0 // Out of Stock
+    subCategory: 'Classic',
+    color: 'Crisp White',
+    image: 'https://images.unsplash.com/photo-1594801127027-2c9748b89410?auto=format&fit=crop&q=80&w=1200',
+    meaning: 'Appreciation and long-lasting bond',
+    stock: 85,
+    origin: 'NORTH AMERICA',
+    season: 'SUMMER / FALL',
+    careInstructions: 'Remove wilted lower blooms to encourage top buds to open; keep water clean.'
   },
 
   // --- GREENERY ---
   {
     id: 'f5',
-    name: 'Silver Eucalyptus',
-    scientificName: 'Eucalyptus cinerea',
-    price: 3.50,
+    name: 'Silver Dollar Eucalyptus',
+    scientificName: 'EUCALYPTUS CINEREA',
+    price: 4.50,
     category: FlowerCategory.GREENERY,
-    color: 'Silver Green',
-    image: 'https://images.unsplash.com/photo-1543157145-f78c636d023d?q=80&w=600&h=600&fit=crop',
-    meaning: 'Protection and abundance',
-    stock: 45
-  },
-  {
-    id: 'f11',
-    name: 'Monstera Leaf',
-    scientificName: 'Monstera deliciosa',
-    price: 4.00,
-    category: FlowerCategory.GREENERY,
-    color: 'Deep Green',
-    image: 'https://images.unsplash.com/photo-1614594975525-e45190c55d0b?q=80&w=600&h=600&fit=crop',
-    meaning: 'Long life and honor',
-    stock: 25
-  },
-  {
-    id: 'f15',
-    name: 'Italian Ruscus',
-    scientificName: 'Ruscus hypoglossum',
-    price: 3.25,
-    category: FlowerCategory.GREENERY,
-    color: 'Forest Green',
-    image: 'https://images.unsplash.com/photo-1622320641570-369403d8b37c?q=80&w=600&h=600&fit=crop',
-    meaning: 'Thoughtfulness',
-    stock: 40
+    subCategory: 'Architectural',
+    color: 'Sage Green',
+    image: 'https://images.unsplash.com/photo-1599321955726-e0484293cc4f?auto=format&fit=crop&q=80&w=1200',
+    meaning: 'Protection and rejuvenation',
+    stock: 200,
+    origin: 'AUSTRALIA',
+    season: 'YEAR-ROUND',
+    careInstructions: 'Extremely long-lasting; change water weekly; can be dried for perpetual use.'
   },
 
-  // --- ACCENTS ---
+  // --- ACCENT ---
   {
-    id: 'f7',
-    name: 'Lavender Stem',
-    scientificName: 'Lavandula angustifolia',
-    price: 2.50,
+    id: 'f12',
+    name: 'Thistle Eryngium',
+    scientificName: 'ERYNGIUM PLANUM',
+    price: 5.50,
     category: FlowerCategory.ACCENT,
-    color: 'Pale Purple',
-    image: 'https://images.unsplash.com/photo-1512413911193-3d37433c018b?q=80&w=600&h=600&fit=crop',
-    meaning: 'Serenity and grace',
-    stock: 60
-  },
-  {
-    id: 'f16',
-    name: 'Dried Bunny Tails',
-    scientificName: 'Lagurus ovatus',
-    price: 1.50,
-    category: FlowerCategory.ACCENT,
-    color: 'Cream',
-    image: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=600&h=600&fit=crop',
-    meaning: 'Softness and whimsy',
-    stock: 80
-  },
-  {
-    id: 'f17',
-    name: 'Globe Thistle',
-    scientificName: 'Echinops',
-    price: 4.75,
-    category: FlowerCategory.ACCENT,
-    color: 'Steel Blue',
-    image: 'https://images.unsplash.com/photo-1601344440058-294711a4739d?q=80&w=600&h=600&fit=crop',
-    meaning: 'Independence',
-    stock: 15
+    subCategory: 'Wild',
+    color: 'Blue Steel',
+    image: 'https://images.unsplash.com/photo-1508610048659-a06b669e3321?auto=format&fit=crop&q=80&w=1200',
+    meaning: 'Austerity and independence',
+    stock: 55,
+    origin: 'EUROPE',
+    season: 'SUMMER / AUTUMN',
+    careInstructions: 'Handle with gloves; keep in moderate water levels; avoids high humidity.'
   }
 ];
 
 export const WRAP_STYLES = [
-  { id: 'paper', name: 'Rustic Kraft Paper', price: 2.00 },
-  { id: 'silk', name: 'Elegant Silk Wrap', price: 10.00 },
-  { id: 'burlap', name: 'Vintage Burlap', price: 5.00 },
-  { id: 'jute', name: 'Natural Jute', price: 4.00 },
-  { id: 'organza', name: 'Sheer Organza', price: 12.00 },
-  { id: 'none', name: 'No Wrap (Stems only)', price: 0 }
+  { id: 'paper', name: 'Kraft Paper', price: 2.00 },
+  { id: 'burlap', name: 'Rustic Burlap', price: 4.50 },
+  { id: 'silk', name: 'Italian Silk', price: 15.00 },
+  { id: 'jute', name: 'Eco Jute', price: 3.00 },
+  { id: 'organza', name: 'Sheer Organza', price: 6.00 },
+  { id: 'none', name: 'Hand-Tied', price: 0.00 }
 ];
 
 export const PRESET_BOUQUETS: Record<string, CustomBouquet> = {
-  Romantic: {
+  'Romantic': {
     items: [
-      { flowerId: 'f1', quantity: 2, rotation: -10, scale: 1.1, position: { x: 42, y: 38 } },
-      { flowerId: 'f1', quantity: 1, rotation: 15, scale: 1.0, position: { x: 58, y: 42 } },
-      { flowerId: 'f10', quantity: 2, rotation: 0, scale: 1.2, position: { x: 50, y: 32 } },
-      { flowerId: 'f4', quantity: 4, rotation: 45, scale: 0.9, position: { x: 35, y: 45 } },
-      { flowerId: 'f4', quantity: 4, rotation: -30, scale: 0.8, position: { x: 65, y: 35 } }
+      { flowerId: 'f1', quantity: 3, rotation: 15, scale: 1.1, position: { x: 50, y: 40 } },
+      { flowerId: 'f2', quantity: 2, rotation: 5, scale: 1, position: { x: 60, y: 50 } }
     ],
     wrapType: 'silk',
     ribbonColor: '#f472b6'
-  },
-  Modern: {
-    items: [
-      { flowerId: 'f10', quantity: 1, rotation: 0, scale: 1.3, position: { x: 50, y: 35 } },
-      { flowerId: 'f2', quantity: 2, rotation: -20, scale: 1.1, position: { x: 40, y: 45 } },
-      { flowerId: 'f2', quantity: 2, rotation: 20, scale: 1.1, position: { x: 60, y: 45 } },
-      { flowerId: 'f11', quantity: 2, rotation: 10, scale: 1.2, position: { x: 52, y: 25 } }
-    ],
-    wrapType: 'organza',
-    ribbonColor: '#ffffff'
-  },
-  Rustic: {
-    items: [
-      { flowerId: 'f9', quantity: 2, rotation: 5, scale: 1.2, position: { x: 45, y: 35 } },
-      { flowerId: 'f16', quantity: 1, rotation: -15, scale: 1.1, position: { x: 58, y: 40 } },
-      { flowerId: 'f7', quantity: 5, rotation: 0, scale: 1.0, position: { x: 35, y: 40 } },
-      { flowerId: 'f7', quantity: 5, rotation: 10, scale: 1.0, position: { x: 65, y: 40 } },
-      { flowerId: 'f5', quantity: 3, rotation: -10, scale: 1.1, position: { x: 50, y: 28 } }
-    ],
-    wrapType: 'burlap',
-    ribbonColor: '#8b7355'
   }
 };
