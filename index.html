@@ -193,6 +193,66 @@
             animation: glow-pulse 3s ease-in-out infinite;
         }
 
+        /* === PARALLAX HERO ANIMATIONS === */
+        @keyframes pulse-slow {
+
+            0%,
+            100% {
+                opacity: 0.4;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.6;
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes bounce-slow {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        @keyframes scroll-indicator {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            50% {
+                transform: translateY(8px);
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .animate-pulse-slow {
+            animation: pulse-slow 6s ease-in-out infinite;
+        }
+
+        .animate-bounce-slow {
+            animation: bounce-slow 3s ease-in-out infinite;
+        }
+
+        .animate-scroll-indicator {
+            animation: scroll-indicator 2s ease-in-out infinite;
+        }
+
+        .bg-gradient-radial {
+            background: radial-gradient(circle, var(--tw-gradient-from) 0%, var(--tw-gradient-to) 70%);
+        }
+
         /* === GLASSMORPHISM EFFECTS === */
         .glass {
             background: rgba(255, 255, 255, 0.75);

@@ -4,6 +4,7 @@ import { HashRouter as Router, Routes, Route, Link, useNavigate } from 'react-ro
 import BouquetBuilder from './components/BouquetBuilder';
 import FlowerDetailModal from './components/FlowerDetailModal';
 import CheckoutPage from './components/CheckoutPage';
+import ParallaxHero from './components/ParallaxHero';
 import { ToastProvider, useToast } from './components/Toast';
 import { CustomBouquet, CartItem, FlowerCategory, Flower } from './types';
 import { FLOWER_CATALOG } from './constants';
@@ -218,40 +219,14 @@ const HomeView: React.FC = () => {
     showToast(`${flower.name} added to cart`, 'success');
   };
 
+  const scrollToContent = () => {
+    window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
+  };
+
   return (
-    <div className="pt-24 min-h-screen">
-      <section className="relative h-[80vh] flex items-center overflow-hidden">
-        <div className="absolute inset-0 -z-10">
-          <img
-            src="https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&q=80&w=2400"
-            className="w-full h-full object-cover brightness-[0.95]"
-            alt="Lush Floral Background"
-          />
-          <div className="absolute inset-0 bg-stone-900/10"></div>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-12 w-full space-y-12">
-          <div className="space-y-6 animate-slide-up">
-            <span className="text-white text-xs font-black uppercase tracking-[0.5em] block shadow-sm">Global Distribution Network</span>
-            <h2 className="text-7xl md:text-9xl font-bold serif italic text-white tracking-tighter leading-none drop-shadow-2xl">
-              Ethical <br />Artistry.
-            </h2>
-            <p className="max-w-xl text-lg text-white font-light leading-relaxed drop-shadow-md">
-              The premier online shop for curated botanical inventory. From rare imports to rustic staples,
-              we distribute beauty in every variety and style.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-6 animate-fade-in" style={{ animationDelay: '0.4s' }}>
-            <Link to="/catalog" className="px-10 py-5 bg-white text-stone-900 rounded-2xl font-bold text-sm hover:bg-pink-600 hover:text-white transition-all shadow-2xl">
-              Shop Inventory
-            </Link>
-            <Link to="/design" className="px-10 py-5 bg-stone-900/50 backdrop-blur-md text-white border border-white/30 rounded-2xl font-bold text-sm hover:bg-white hover:text-stone-900 transition-all">
-              Bespoke Studio
-            </Link>
-          </div>
-        </div>
-      </section>
+    <div className="min-h-screen">
+      {/* Parallax Hero - Scroll-triggered petal dispersion */}
+      <ParallaxHero onExplore={scrollToContent} />
 
       {/* IN STOCK NOW */}
       <section className="py-32 px-8 md:px-12 bg-gradient-to-b from-stone-50 to-white">
