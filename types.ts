@@ -62,6 +62,6 @@ export interface CartItem {
   name: string;
   price: number;
   quantity: number;
-  type: 'ready-made' | 'custom';
+  type: 'ready-made' | 'custom' | 'single stem';
   image: string;
 }
