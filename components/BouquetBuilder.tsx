@@ -359,12 +359,12 @@ const BouquetBuilder: React.FC<BouquetBuilderProps> = ({ onAddToCart, initialFlo
 
               const localX = item.localRotation3D?.x || 0;
               const localY = item.localRotation3D?.y || 0;
-              const zOff = isPreviewMode ? ((idx - bouquet.items.length / 2) * 30) : 0;
+              const zOff = isPreviewMode ? ((idx - bouquet.items.length / 2) * 40) : 0;
 
               return (
                 <div
                   key={idx}
-                  className={`absolute transition-all duration-300 ${isPreviewMode ? 'cursor-pointer' : 'cursor-grab active:cursor-grabbing'}`}
+                  className={`absolute transition-all duration-500 ${isPreviewMode ? 'cursor-pointer' : 'cursor-grab active:cursor-grabbing'} ${!isPreviewMode && !isDragging ? 'flower-alive' : ''}`}
                   style={{
                     left: `${item.position.x}%`,
                     top: `${item.position.y}%`,
@@ -372,7 +372,7 @@ const BouquetBuilder: React.FC<BouquetBuilderProps> = ({ onAddToCart, initialFlo
                     zIndex: isSelected ? 100 : idx + 1,
                     transformStyle: 'preserve-3d',
                     willChange: 'transform',
-                    filter: isSelected ? 'drop-shadow(0 0 30px rgba(236, 72, 153, 0.3))' : 'drop-shadow(0 8px 16px rgba(0,0,0,0.15))'
+                    animation: !isPreviewMode && !isDragging ? `flower-breathe ${4 + idx * 0.5}s ease-in-out infinite` : 'none'
                   }}
                   onMouseDown={(e) => {
                     e.stopPropagation();
@@ -380,33 +380,49 @@ const BouquetBuilder: React.FC<BouquetBuilderProps> = ({ onAddToCart, initialFlo
                     if (!isPreviewMode) setIsDragging(true);
                   }}
                 >
-                  {/* 4K-Optimized Flower Element */}
+                  {/* 4K Photorealistic Flower Element */}
                   <div
-                    className={`relative w-52 h-52 rounded-full overflow-hidden transition-all duration-300 ${isSelected
-                      ? 'border-4 border-pink-400 scale-110 ring-4 ring-pink-200/50'
-                      : 'border-4 border-white/90 hover:border-white hover:scale-105'
-                      }`}
+                    className={`relative w-72 h-72 overflow-hidden transition-all duration-500 flower-element flower-ambient-glow ${isSelected ? 'flower-selected scale-110' : 'hover:scale-105'}`}
                     style={{
+                      borderRadius: '47% 53% 45% 55% / 52% 48% 52% 48%',
+                      border: isSelected ? '4px solid rgba(244, 114, 182, 0.8)' : '3px solid rgba(255, 255, 255, 0.85)',
                       boxShadow: isSelected
-                        ? '0 25px 50px -12px rgba(236, 72, 153, 0.4), 0 0 0 1px rgba(255,255,255,0.2)'
-                        : '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255,255,255,0.1)'
+                        ? '0 0 0 4px rgba(236, 72, 153, 0.3), 0 0 60px rgba(236, 72, 153, 0.25), 0 30px 60px -15px rgba(236, 72, 153, 0.35), 0 0 100px rgba(236, 72, 153, 0.1)'
+                        : '0 8px 16px -4px rgba(0, 0, 0, 0.1), 0 20px 40px -10px rgba(0, 0, 0, 0.15), 0 40px 80px -20px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.15)'
                     }}
                   >
+                    {/* Blur-up loading placeholder */}
+                    <div
+                      className="absolute inset-0 bg-gradient-to-br from-stone-100 via-stone-50 to-stone-100"
+                      style={{ filter: 'blur(8px)' }}
+                    />
                     <img
                       src={f?.image}
-                      className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
+                      className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none flower-realistic"
                       alt={f?.name}
                       loading="eager"
-                      style={{ imageRendering: 'high-quality' }}
+                      style={{
+                        imageRendering: 'high-quality',
+                        filter: 'contrast(1.02) saturate(1.08)'
+                      }}
+                      onLoad={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.opacity = '1';
+                        target.classList.add('flower-loaded');
+                        target.classList.remove('flower-loading');
+                      }}
+                      onLoadStart={() => { }}
                     />
-                    {/* Selection Overlay Indicator */}
+                    {/* Ambient light gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-white/10 pointer-events-none" />
+                    {/* Selection glow overlay */}
                     {isSelected && (
-                      <div className="absolute inset-0 bg-gradient-to-t from-pink-500/20 to-transparent pointer-events-none" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-pink-500/15 via-transparent to-pink-200/10 pointer-events-none animate-pulse-soft" />
                     )}
                   </div>
-                  {/* Flower Label on Hover */}
-                  <div className={`absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap transition-all duration-300 ${isSelected ? 'opacity-100' : 'opacity-0'}`}>
-                    <span className="bg-white/95 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-stone-700 shadow-lg border border-stone-100">
+                  {/* Premium Flower Label */}
+                  <div className={`absolute -bottom-10 left-1/2 -translate-x-1/2 whitespace-nowrap transition-all duration-500 ${isSelected ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}>
+                    <span className="bg-white/98 backdrop-blur-xl px-4 py-1.5 rounded-full text-[11px] font-bold text-stone-800 shadow-xl border border-stone-100/80">
                       {f?.name}
                     </span>
                   </div>

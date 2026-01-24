@@ -347,6 +347,100 @@
             outline-offset: 2px;
         }
 
+        /* === 4K PHOTOREALISTIC FLOWER RENDERING === */
+        .flower-realistic {
+            image-rendering: high-quality;
+            image-rendering: -webkit-optimize-contrast;
+            filter: contrast(1.02) saturate(1.05);
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .flower-element {
+            box-shadow:
+                0 4px 6px -1px rgba(0, 0, 0, 0.08),
+                0 10px 25px -5px rgba(0, 0, 0, 0.12),
+                0 25px 50px -12px rgba(0, 0, 0, 0.18),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+            transition: all 0.4s var(--transition-spring);
+        }
+
+        .flower-element:hover {
+            box-shadow:
+                0 8px 12px -3px rgba(0, 0, 0, 0.1),
+                0 20px 40px -10px rgba(0, 0, 0, 0.15),
+                0 35px 60px -15px rgba(0, 0, 0, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.2);
+        }
+
+        .flower-selected {
+            box-shadow:
+                0 0 0 4px rgba(236, 72, 153, 0.4),
+                0 0 40px rgba(236, 72, 153, 0.25),
+                0 25px 50px -12px rgba(236, 72, 153, 0.3),
+                0 0 80px rgba(236, 72, 153, 0.15);
+        }
+
+        .flower-ambient-glow {
+            position: relative;
+        }
+
+        .flower-ambient-glow::before {
+            content: '';
+            position: absolute;
+            inset: -20%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Blur-up loading effect */
+        .flower-loading {
+            filter: blur(20px) saturate(1.2);
+            transform: scale(1.05);
+            transition: filter 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .flower-loaded {
+            filter: blur(0) saturate(1.05) contrast(1.02);
+            transform: scale(1);
+        }
+
+        /* Subtle breathing animation */
+        @keyframes flower-breathe {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.008);
+            }
+        }
+
+        @keyframes flower-sway {
+            0%, 100% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            25% {
+                transform: translate(-50%, -50%) rotate(0.5deg);
+            }
+            75% {
+                transform: translate(-50%, -50%) rotate(-0.5deg);
+            }
+        }
+
+        .flower-alive {
+            animation: flower-breathe 4s ease-in-out infinite;
+        }
+
+        .flower-alive:nth-child(odd) {
+            animation: flower-sway 6s ease-in-out infinite;
+        }
+
+        /* Natural flower shape - soft edges */
+        .flower-natural {
+            border-radius: 45% 55% 50% 50% / 55% 45% 55% 45%;
+            overflow: hidden;
+        }
+
         /* === LOADING SKELETON === */
         .skeleton {
             background: linear-gradient(90deg, #f5f5f4 25%, #e7e5e4 50%, #f5f5f4 75%);
