@@ -59,6 +59,8 @@ const BouquetBuilder: React.FC<BouquetBuilderProps> = ({ onAddToCart, initialFlo
 
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [globalRotation, setGlobalRotation] = useState({ x: 10, y: -5 });
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [showPresetPicker, setShowPresetPicker] = useState(false);
 
   const canvasRef = useRef<HTMLDivElement>(null);
 
@@ -150,6 +152,60 @@ const BouquetBuilder: React.FC<BouquetBuilderProps> = ({ onAddToCart, initialFlo
     setBouquet(newBouquet);
     pushHistory(newBouquet);
     setSelectedItemIndex(nextIdx);
+  };
+
+  // Load a preset bouquet template
+  const loadPreset = (presetName: string) => {
+    const preset = PRESET_BOUQUETS[presetName];
+    if (!preset) return;
+
+    const newBouquet: CustomBouquet = {
+      ...initialBouquet,
+      ...preset,
+      items: preset.items.map(item => ({
+        ...item,
+        localRotation3D: { x: 0, y: 0 }
+      }))
+    };
+    setBouquet(newBouquet);
+    pushHistory(newBouquet);
+    setShowPresetPicker(false);
+    setSelectedItemIndex(null);
+  };
+
+  // Auto-arrange flowers in a pleasing layout
+  const autoArrange = () => {
+    if (bouquet.items.length === 0) return;
+
+    const count = bouquet.items.length;
+    const newItems = bouquet.items.map((item, idx) => {
+      // Create a circular/dome arrangement
+      const angle = (idx / count) * 2 * Math.PI - Math.PI / 2;
+      const radius = 20 + (idx % 2) * 8; // Alternate radii for depth
+      const baseX = 50 + Math.cos(angle) * radius;
+      const baseY = 45 + Math.sin(angle) * radius * 0.6; // Compress vertically
+      const rotation = (Math.random() - 0.5) * 30; // Slight random rotation
+      const scale = 0.9 + (count - idx) / count * 0.3; // Larger in front
+
+      return {
+        ...item,
+        position: { x: baseX, y: baseY },
+        rotation,
+        scale
+      };
+    });
+
+    const newBouquet = { ...bouquet, items: newItems };
+    setBouquet(newBouquet);
+    pushHistory(newBouquet);
+  };
+
+  // Reset arrangement with confirmation
+  const confirmReset = () => {
+    setBouquet(initialBouquet);
+    pushHistory(initialBouquet);
+    setSelectedItemIndex(null);
+    setShowResetConfirm(false);
   };
 
   const generateRealisticPreview = async () => {
@@ -329,13 +385,23 @@ const BouquetBuilder: React.FC<BouquetBuilderProps> = ({ onAddToCart, initialFlo
             {isPreviewMode && (
               <button onClick={() => setGlobalRotation({ x: 10, y: -5 })} className="px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-widest bg-white border border-stone-100 text-stone-400 hover:text-stone-900">Reset View</button>
             )}
+            {!isPreviewMode && bouquet.items.length > 1 && (
+              <button onClick={autoArrange} className="px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-widest bg-white border border-stone-100 text-stone-400 hover:text-stone-900 hover:bg-stone-50 transition-all" title="Auto-arrange flowers">
+                <i className="fa-solid fa-wand-magic-sparkles mr-2"></i>Arrange
+              </button>
+            )}
+            <button onClick={() => setShowPresetPicker(true)} className="px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-widest bg-white border border-stone-100 text-stone-400 hover:text-pink-500 hover:border-pink-200 transition-all" title="Load a preset template">
+              <i className="fa-solid fa-swatchbook mr-2"></i>Presets
+            </button>
             <button
               onClick={() => setWholesale({ ...wholesale, enabled: !wholesale.enabled })}
               className={`px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-widest transition-all border ${wholesale.enabled ? 'bg-pink-500 text-white border-pink-500' : 'bg-white text-stone-400 border-stone-100'}`}
             >
               Wholesale Mode {wholesale.enabled ? 'On' : 'Off'}
             </button>
-            <button onClick={() => setBouquet(initialBouquet)} className="w-10 h-10 rounded-full bg-stone-50 text-stone-300 hover:text-red-500 hover:bg-red-50 transition-all"><i className="fa-solid fa-trash-can text-sm"></i></button>
+            <button onClick={() => bouquet.items.length > 0 ? setShowResetConfirm(true) : null} disabled={bouquet.items.length === 0} className="w-10 h-10 rounded-full bg-stone-50 text-stone-300 hover:text-red-500 hover:bg-red-50 transition-all disabled:opacity-30 disabled:cursor-not-allowed" title="Reset arrangement">
+              <i className="fa-solid fa-trash-can text-sm"></i>
+            </button>
           </div>
         </div>
 
@@ -836,6 +902,117 @@ const BouquetBuilder: React.FC<BouquetBuilderProps> = ({ onAddToCart, initialFlo
             <div className="p-10 text-center space-y-4">
               <h3 className="text-3xl font-bold serif italic">Architectural Visualization</h3>
               <button onClick={() => setRealisticImageUrl(null)} className="px-10 py-4 bg-stone-900 text-white rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-pink-600 transition-all shadow-xl">Close Preview</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reset Confirmation Modal */}
+      {showResetConfirm && (
+        <div className="fixed inset-0 z-[3000] flex items-center justify-center p-8 animate-in fade-in duration-200">
+          <div className="absolute inset-0 bg-stone-950/80 backdrop-blur-sm" onClick={() => setShowResetConfirm(false)}></div>
+          <div className="relative bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl animate-in zoom-in duration-300 p-10 space-y-6 text-center">
+            <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto">
+              <i className="fa-solid fa-triangle-exclamation text-2xl text-red-500"></i>
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-2xl font-bold serif italic text-stone-900">Reset Arrangement?</h3>
+              <p className="text-stone-400 text-sm">This will remove all {bouquet.items.length} flowers from your canvas. This action cannot be undone.</p>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowResetConfirm(false)}
+                className="flex-1 py-4 bg-stone-100 text-stone-600 rounded-2xl font-bold hover:bg-stone-200 transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmReset}
+                className="flex-1 py-4 bg-red-500 text-white rounded-2xl font-bold hover:bg-red-600 transition-all"
+              >
+                Reset All
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Preset Picker Modal */}
+      {showPresetPicker && (
+        <div className="fixed inset-0 z-[3000] flex items-center justify-center p-8 animate-in fade-in duration-200">
+          <div className="absolute inset-0 bg-stone-950/80 backdrop-blur-sm" onClick={() => setShowPresetPicker(false)}></div>
+          <div className="relative bg-white w-full max-w-3xl rounded-[3rem] overflow-hidden shadow-2xl animate-in zoom-in duration-300">
+            <div className="p-10 space-y-8">
+              <div className="flex justify-between items-start">
+                <div className="space-y-2">
+                  <span className="text-pink-500 text-[10px] font-black uppercase tracking-[0.4em]">Quick Start Templates</span>
+                  <h3 className="text-3xl font-bold serif italic text-stone-900">Choose a Preset Style</h3>
+                  <p className="text-stone-400 text-sm">Start with a curated arrangement and customize from there</p>
+                </div>
+                <button onClick={() => setShowPresetPicker(false)} className="w-10 h-10 rounded-full bg-stone-50 flex items-center justify-center hover:bg-stone-900 hover:text-white transition-all">
+                  <i className="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Romantic Preset */}
+                <button
+                  onClick={() => loadPreset('Romantic')}
+                  className="group text-left bg-gradient-to-br from-pink-50 to-rose-50 p-6 rounded-3xl border-2 border-transparent hover:border-pink-300 transition-all hover:shadow-xl"
+                >
+                  <div className="aspect-square rounded-2xl overflow-hidden mb-4 bg-white/50 flex items-center justify-center">
+                    <div className="text-6xl opacity-80">💐</div>
+                  </div>
+                  <h4 className="text-lg font-bold serif italic text-stone-900 group-hover:text-pink-600 transition-colors">Romantic</h4>
+                  <p className="text-xs text-stone-400 mt-1">Peonies & Roses in soft pinks</p>
+                  <div className="flex gap-2 mt-3">
+                    <span className="bg-white px-2 py-1 rounded-full text-[8px] font-bold text-stone-500">3 Peonies</span>
+                    <span className="bg-white px-2 py-1 rounded-full text-[8px] font-bold text-stone-500">2 Roses</span>
+                  </div>
+                </button>
+
+                {/* Modern Minimalist Preset */}
+                <button
+                  onClick={() => loadPreset('Modern Minimalist')}
+                  className="group text-left bg-gradient-to-br from-stone-50 to-slate-50 p-6 rounded-3xl border-2 border-transparent hover:border-stone-300 transition-all hover:shadow-xl"
+                >
+                  <div className="aspect-square rounded-2xl overflow-hidden mb-4 bg-white/50 flex items-center justify-center">
+                    <div className="text-6xl opacity-80">🌿</div>
+                  </div>
+                  <h4 className="text-lg font-bold serif italic text-stone-900 group-hover:text-stone-600 transition-colors">Modern Minimalist</h4>
+                  <p className="text-xs text-stone-400 mt-1">Statement protea with eucalyptus</p>
+                  <div className="flex gap-2 mt-3">
+                    <span className="bg-white px-2 py-1 rounded-full text-[8px] font-bold text-stone-500">1 Protea</span>
+                    <span className="bg-white px-2 py-1 rounded-full text-[8px] font-bold text-stone-500">2 Eucalyptus</span>
+                  </div>
+                </button>
+
+                {/* Wild Garden Preset */}
+                <button
+                  onClick={() => loadPreset('Wild Garden')}
+                  className="group text-left bg-gradient-to-br from-emerald-50 to-green-50 p-6 rounded-3xl border-2 border-transparent hover:border-emerald-300 transition-all hover:shadow-xl"
+                >
+                  <div className="aspect-square rounded-2xl overflow-hidden mb-4 bg-white/50 flex items-center justify-center">
+                    <div className="text-6xl opacity-80">🌸</div>
+                  </div>
+                  <h4 className="text-lg font-bold serif italic text-stone-900 group-hover:text-emerald-600 transition-colors">Wild Garden</h4>
+                  <p className="text-xs text-stone-400 mt-1">Dahlias, wax flowers & seeded eucalyptus</p>
+                  <div className="flex gap-2 mt-3 flex-wrap">
+                    <span className="bg-white px-2 py-1 rounded-full text-[8px] font-bold text-stone-500">2 Dahlias</span>
+                    <span className="bg-white px-2 py-1 rounded-full text-[8px] font-bold text-stone-500">3 Wax</span>
+                    <span className="bg-white px-2 py-1 rounded-full text-[8px] font-bold text-stone-500">2 Eucalyptus</span>
+                  </div>
+                </button>
+              </div>
+
+              <div className="text-center pt-4 border-t border-stone-100">
+                <button
+                  onClick={() => setShowPresetPicker(false)}
+                  className="text-stone-400 text-[10px] font-black uppercase tracking-widest hover:text-stone-900 transition-colors"
+                >
+                  Or start from scratch →
+                </button>
+              </div>
             </div>
           </div>
         </div>

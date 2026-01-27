@@ -26,153 +26,418 @@ export const useAppContext = () => {
   return context;
 };
 
-const Navbar: React.FC<{ cartCount: number, onOpenCart: () => void }> = ({ cartCount, onOpenCart }) => (
-  <nav className="fixed top-0 left-0 right-0 h-24 bg-white border-b border-stone-100 z-[1000] px-8 md:px-12 flex items-center justify-between">
-    <Link to="/" className="flex items-center gap-4 group">
-      <div className="w-12 h-12 bg-stone-900 rounded-2xl flex items-center justify-center text-white shadow-xl group-hover:bg-pink-600 transition-all duration-500">
-        <i className="fa-solid fa-leaf text-xl transform -rotate-12"></i>
-      </div>
-      <div className="flex flex-col">
-        <h1 className="text-2xl font-bold serif italic leading-none tracking-tight text-stone-900">Petal & Prose</h1>
-        <span className="text-[9px] font-black uppercase tracking-[0.4em] text-stone-400">Haute Couture Florals</span>
-      </div>
-    </Link>
+const Navbar: React.FC<{ cartCount: number, onOpenCart: () => void }> = ({ cartCount, onOpenCart }) => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-    <div className="flex items-center gap-10">
-      <div className="hidden lg:flex gap-12 text-[10px] font-black uppercase tracking-[0.3em] text-stone-400">
-        <Link to="/catalog" className="hover:text-stone-900 transition-colors">Catalog</Link>
-        <Link to="/design" className="hover:text-stone-900 transition-colors">Custom Studio</Link>
-        <Link to="/membership" className="hover:text-stone-900 transition-colors">Membership</Link>
-      </div>
-      <button
-        onClick={onOpenCart}
-        className="relative w-12 h-12 bg-stone-50 rounded-2xl flex items-center justify-center hover:bg-stone-900 hover:text-white transition-all group shadow-sm"
-      >
-        <i className="fa-solid fa-bag-shopping text-sm"></i>
-        {cartCount > 0 && (
-          <span className="absolute -top-1 -right-1 w-5 h-5 bg-pink-500 text-white text-[9px] font-black flex items-center justify-center rounded-full border-2 border-white shadow-lg animate-fade-in">
-            {cartCount}
-          </span>
-        )}
-      </button>
-    </div>
-  </nav>
-);
+  return (
+    <>
+      <nav className="fixed top-0 left-0 right-0 h-24 bg-white/95 backdrop-blur-md border-b border-stone-100 z-[1000] px-6 md:px-12 flex items-center justify-between">
+        <Link to="/" className="flex items-center gap-3 group">
+          <div className="w-11 h-11 bg-stone-900 rounded-2xl flex items-center justify-center text-white shadow-xl group-hover:bg-pink-600 transition-all duration-500">
+            <i className="fa-solid fa-leaf text-lg transform -rotate-12"></i>
+          </div>
+          <div className="flex flex-col">
+            <h1 className="text-xl md:text-2xl font-bold serif italic leading-none tracking-tight text-stone-900">Petal & Prose</h1>
+            <span className="text-[8px] font-black uppercase tracking-[0.3em] text-stone-400 hidden sm:block">Haute Couture Florals</span>
+          </div>
+        </Link>
+
+        <div className="flex items-center gap-4 md:gap-10">
+          <div className="hidden lg:flex gap-10 text-[10px] font-black uppercase tracking-[0.25em] text-stone-400">
+            <Link to="/catalog" className="hover:text-stone-900 transition-colors">Catalog</Link>
+            <Link to="/design" className="hover:text-stone-900 transition-colors">Custom Studio</Link>
+            <Link to="/membership" className="hover:text-stone-900 transition-colors">Membership</Link>
+          </div>
+          <button onClick={onOpenCart} className="relative w-11 h-11 bg-stone-50 rounded-2xl flex items-center justify-center hover:bg-stone-900 hover:text-white transition-all group shadow-sm">
+            <i className="fa-solid fa-bag-shopping text-sm"></i>
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-pink-500 text-white text-[9px] font-black flex items-center justify-center rounded-full border-2 border-white shadow-lg animate-fade-in">
+                {cartCount}
+              </span>
+            )}
+          </button>
+          <button onClick={() => setMobileMenuOpen(true)} className="lg:hidden w-11 h-11 bg-stone-50 rounded-2xl flex items-center justify-center hover:bg-stone-900 hover:text-white transition-all">
+            <i className="fa-solid fa-bars"></i>
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-[2000] lg:hidden animate-in fade-in duration-200">
+          <div className="absolute inset-0 bg-stone-950/60 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)}></div>
+          <div className="absolute right-0 top-0 bottom-0 w-72 bg-white shadow-2xl animate-in slide-in-from-right duration-300 flex flex-col">
+            <div className="p-6 border-b border-stone-100 flex justify-between items-center">
+              <span className="text-lg font-bold serif italic text-stone-900">Menu</span>
+              <button onClick={() => setMobileMenuOpen(false)} className="w-10 h-10 bg-stone-50 rounded-full flex items-center justify-center hover:bg-stone-900 hover:text-white transition-all">
+                <i className="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <nav className="flex-1 p-6 space-y-2">
+              <Link to="/" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-4 px-4 py-4 rounded-xl hover:bg-stone-50 text-stone-700 font-medium transition-colors">
+                <i className="fa-solid fa-home w-5 text-center text-stone-400"></i> Home
+              </Link>
+              <Link to="/catalog" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-4 px-4 py-4 rounded-xl hover:bg-stone-50 text-stone-700 font-medium transition-colors">
+                <i className="fa-solid fa-leaf w-5 text-center text-stone-400"></i> Catalog
+              </Link>
+              <Link to="/design" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-4 px-4 py-4 rounded-xl hover:bg-stone-50 text-stone-700 font-medium transition-colors">
+                <i className="fa-solid fa-wand-magic-sparkles w-5 text-center text-stone-400"></i> Custom Studio
+              </Link>
+              <Link to="/membership" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-4 px-4 py-4 rounded-xl hover:bg-stone-50 text-stone-700 font-medium transition-colors">
+                <i className="fa-solid fa-crown w-5 text-center text-stone-400"></i> Membership
+              </Link>
+            </nav>
+            <div className="p-6 border-t border-stone-100">
+              <button onClick={() => { onOpenCart(); setMobileMenuOpen(false); }} className="w-full py-4 bg-stone-900 text-white rounded-xl font-bold text-sm hover:bg-pink-600 transition-all flex items-center justify-center gap-3">
+                <i className="fa-solid fa-bag-shopping"></i> View Cart {cartCount > 0 && `(${cartCount})`}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
 
 const CatalogView: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<FlowerCategory | 'All'>('All');
   const [selectedFlower, setSelectedFlower] = useState<Flower | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const { addSingleFlower, navigateToStudioWithFlower } = useAppContext();
   const { showToast } = useToast();
 
+  // Category metadata for section headers
+  const categoryMeta = {
+    [FlowerCategory.BLOOM]: {
+      title: 'Focal Blooms',
+      description: 'Statement flowers that anchor your arrangement with dramatic presence',
+      icon: 'fa-seedling',
+      gradient: 'from-pink-400 to-rose-500'
+    },
+    [FlowerCategory.FILLER]: {
+      title: 'Delicate Fillers',
+      description: 'Texture and volume builders that create depth and movement',
+      icon: 'fa-cloud',
+      gradient: 'from-violet-400 to-purple-500'
+    },
+    [FlowerCategory.GREENERY]: {
+      title: 'Lush Greenery',
+      description: 'Architectural foliage for structure and organic flow',
+      icon: 'fa-leaf',
+      gradient: 'from-emerald-400 to-green-500'
+    },
+    [FlowerCategory.ACCENT]: {
+      title: 'Textural Accents',
+      description: 'Unique elements and dried pieces for artistic expression',
+      icon: 'fa-star',
+      gradient: 'from-amber-400 to-orange-500'
+    }
+  };
+
+  // Filter and search flowers
   const filteredFlowers = useMemo(() => {
-    return activeFilter === 'All'
+    let flowers = activeFilter === 'All'
       ? FLOWER_CATALOG
       : FLOWER_CATALOG.filter(f => f.category === activeFilter);
-  }, [activeFilter]);
+
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      flowers = flowers.filter(f =>
+        f.name.toLowerCase().includes(query) ||
+        f.scientificName.toLowerCase().includes(query) ||
+        f.color.toLowerCase().includes(query) ||
+        f.subCategory.toLowerCase().includes(query)
+      );
+    }
+    return flowers;
+  }, [activeFilter, searchQuery]);
+
+  // Group flowers by category for section view
+  const flowersByCategory = useMemo(() => {
+    if (activeFilter !== 'All' || searchQuery.trim()) {
+      return null; // Show flat grid when filtering/searching
+    }
+
+    const categories = [FlowerCategory.BLOOM, FlowerCategory.FILLER, FlowerCategory.GREENERY, FlowerCategory.ACCENT];
+    return categories.map(cat => ({
+      category: cat,
+      flowers: FLOWER_CATALOG.filter(f => f.category === cat)
+    })).filter(group => group.flowers.length > 0);
+  }, [activeFilter, searchQuery]);
 
   const handleAddToCart = (flower: Flower, quantity: number) => {
     addSingleFlower(flower, quantity);
     showToast(`${flower.name} added to cart`, 'success');
   };
 
+  const handleQuickAdd = (e: React.MouseEvent, flower: Flower) => {
+    e.stopPropagation();
+    addSingleFlower(flower, 1);
+    showToast(`${flower.name} added to cart`, 'success');
+  };
+
+  // Color swatch component
+  const ColorSwatch: React.FC<{ color: string }> = ({ color }) => {
+    const colorMap: Record<string, string> = {
+      'Soft Pink': '#f9a8d4',
+      'Champagne': '#e7d8c9',
+      'Blush Cream': '#f5e6d3',
+      'Blush Pink': '#fbcfe8',
+      'Dusty Pink': '#d4a5a5',
+      'Pure White': '#ffffff',
+      'Peach Blush': '#fcd5ce',
+      'Deep Wine': '#722f37',
+      'Antique Blue': '#6b7b8c',
+      'Multi-color': 'linear-gradient(135deg, #f472b6, #fbbf24, #a855f7)',
+      'Crisp White': '#fafafa',
+      'White': '#f5f5f5',
+      'Dusty Rose': '#dcb9b9',
+      'Pale Pink': '#fce7f3',
+      'Lavender': '#c4b5d6',
+      'Sage Green': '#9caf88',
+      'Deep Green': '#2f5233',
+      'Silver Green': '#a3b899',
+      'Vibrant Green': '#22c55e',
+      'Sage Silver': '#b4bfad',
+      'Steel Blue': '#4682b4',
+      'Golden Yellow': '#fbbf24',
+      'Lavender Purple': '#a78bfa',
+      'Natural Cream': '#f5f0e1',
+      'Natural Beige': '#d4c7b0',
+      'Natural Brown': '#8b7355'
+    };
+
+    const bg = colorMap[color] || '#e5e5e5';
+    const isGradient = bg.startsWith('linear');
+
+    return (
+      <div
+        className="w-4 h-4 rounded-full border border-stone-200 shadow-sm"
+        style={{ background: bg }}
+        title={color}
+      />
+    );
+  };
+
+  // Stock indicator component
+  const StockBadge: React.FC<{ stock: number }> = ({ stock }) => {
+    if (stock === 0) return <span className="text-red-500 text-[9px] font-bold uppercase">Sold Out</span>;
+    if (stock <= 20) return <span className="text-orange-500 text-[9px] font-bold uppercase">Only {stock} left</span>;
+    if (stock <= 50) return <span className="text-amber-500 text-[9px] font-bold uppercase">Limited</span>;
+    return <span className="text-green-500 text-[9px] font-bold uppercase">In Stock</span>;
+  };
+
+  // Flower card component
+  const FlowerCard: React.FC<{ flower: Flower }> = ({ flower }) => {
+    const isSoldOut = flower.stock <= 0;
+
+    return (
+      <div
+        className={`group relative bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 cursor-pointer border border-stone-50 hover:border-stone-100 ${isSoldOut ? 'opacity-50 grayscale' : ''}`}
+        onClick={() => !isSoldOut && setSelectedFlower(flower)}
+      >
+        {/* Image Container */}
+        <div className="relative aspect-square overflow-hidden bg-stone-100">
+          <img
+            src={flower.image}
+            alt={flower.name}
+            loading="lazy"
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1526047932273-341f2a7631f9?q=80&w=800&fit=crop';
+            }}
+          />
+
+          {/* Stock Badge */}
+          <div className="absolute top-4 left-4">
+            <div className={`px-3 py-1.5 rounded-full backdrop-blur-md text-[9px] font-black uppercase tracking-wider shadow-lg ${flower.stock > 50 ? 'bg-green-500/90 text-white' :
+              flower.stock > 20 ? 'bg-amber-500/90 text-white' :
+                flower.stock > 0 ? 'bg-orange-500/90 text-white' :
+                  'bg-stone-900/90 text-white'
+              }`}>
+              {flower.stock > 100 ? 'Abundant' : flower.stock > 50 ? 'In Stock' : flower.stock > 20 ? 'Limited' : flower.stock > 0 ? `${flower.stock} left` : 'Sold Out'}
+            </div>
+          </div>
+
+          {/* Quick Add Button - appears on hover */}
+          {!isSoldOut && (
+            <button
+              onClick={(e) => handleQuickAdd(e, flower)}
+              className="absolute bottom-4 right-4 w-12 h-12 bg-white rounded-full shadow-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300 hover:bg-pink-500 hover:text-white"
+            >
+              <i className="fa-solid fa-plus text-sm"></i>
+            </button>
+          )}
+
+          {/* Hover Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-stone-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-20">
+            <span className="text-white text-[10px] font-black uppercase tracking-widest">
+              View Details <i className="fa-solid fa-arrow-right ml-2"></i>
+            </span>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="p-6 space-y-4">
+          <div className="flex justify-between items-start gap-4">
+            <div className="space-y-1 min-w-0">
+              <h4 className="text-lg font-bold serif text-stone-900 leading-tight truncate group-hover:text-pink-600 transition-colors">
+                {flower.name}
+              </h4>
+              <p className="text-[9px] font-black uppercase text-stone-300 tracking-[0.2em] truncate">
+                {flower.scientificName}
+              </p>
+            </div>
+            <span className="text-xl font-bold serif italic text-pink-400 shrink-0">
+              ${flower.price.toFixed(2)}
+            </span>
+          </div>
+
+          {/* Color and Category Row */}
+          <div className="flex items-center gap-3">
+            <ColorSwatch color={flower.color} />
+            <span className="text-[10px] text-stone-400 font-medium">{flower.color}</span>
+            <span className="text-stone-200">•</span>
+            <span className="text-[10px] text-stone-400 font-medium">{flower.subCategory}</span>
+          </div>
+
+          {/* Metadata Tags */}
+          <div className="flex flex-wrap gap-2">
+            <span className="bg-stone-50 text-stone-400 px-3 py-1 rounded-lg text-[9px] font-bold uppercase tracking-wider">
+              {flower.origin}
+            </span>
+            <span className="bg-stone-50 text-stone-400 px-3 py-1 rounded-lg text-[9px] font-bold uppercase tracking-wider">
+              {flower.season}
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="pt-32 pb-24 px-8 md:px-12 max-w-[1600px] mx-auto animate-fade-in">
       {/* Catalog Header */}
-      <header className="mb-24 flex flex-col md:flex-row md:items-center justify-between gap-10">
-        <h2 className="text-[6rem] md:text-[9rem] font-bold serif leading-none text-stone-900 tracking-tighter">
-          The Catalog<span className="text-pink-300">.</span>
-        </h2>
+      <header className="mb-16 space-y-10">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+          <div className="space-y-4">
+            <span className="text-pink-500 text-[10px] font-black uppercase tracking-[0.4em] block">Premium Botanical Collection</span>
+            <h2 className="text-[4rem] md:text-[6rem] font-bold serif leading-none text-stone-900 tracking-tighter">
+              The Catalog<span className="text-pink-300">.</span>
+            </h2>
+            <p className="text-stone-400 text-lg font-light max-w-xl">
+              {FLOWER_CATALOG.length} curated varieties • 4K photographic accuracy • Farm-fresh delivery
+            </p>
+          </div>
 
+          {/* Search Bar */}
+          <div className="relative w-full lg:w-96">
+            <input
+              type="text"
+              placeholder="Search flowers, colors, styles..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full px-6 py-4 pl-14 bg-white border border-stone-100 rounded-2xl text-stone-900 placeholder:text-stone-300 focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-pink-300 transition-all shadow-sm"
+            />
+            <i className="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-stone-300"></i>
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 bg-stone-100 rounded-full flex items-center justify-center hover:bg-stone-200 transition-colors"
+              >
+                <i className="fa-solid fa-xmark text-xs text-stone-500"></i>
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Filter Pills */}
         <div className="flex flex-wrap gap-3">
-          {['ALL', 'BLOOM', 'FILLER', 'GREENERY', 'ACCENT'].map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveFilter(cat === 'ALL' ? 'All' : cat.charAt(0) + cat.slice(1).toLowerCase() as any)}
-              className={`px-10 py-3 rounded-full text-[11px] font-black uppercase tracking-[0.3em] transition-all border ${activeFilter.toUpperCase() === cat
-                ? 'bg-stone-900 text-white border-stone-900 shadow-2xl scale-105'
-                : 'bg-white text-stone-300 border-stone-50 hover:border-stone-400'
-                }`}
-            >
-              {cat}
-            </button>
-          ))}
+          {['ALL', 'BLOOM', 'FILLER', 'GREENERY', 'ACCENT'].map((cat) => {
+            const isActive = activeFilter.toUpperCase() === cat;
+            const catKey = cat === 'ALL' ? null : cat.charAt(0) + cat.slice(1).toLowerCase() as FlowerCategory;
+            const meta = catKey ? categoryMeta[catKey] : null;
+
+            return (
+              <button
+                key={cat}
+                onClick={() => setActiveFilter(cat === 'ALL' ? 'All' : catKey as FlowerCategory)}
+                className={`px-8 py-3 rounded-full text-[11px] font-black uppercase tracking-[0.2em] transition-all border flex items-center gap-3 ${isActive
+                  ? 'bg-stone-900 text-white border-stone-900 shadow-2xl scale-105'
+                  : 'bg-white text-stone-400 border-stone-100 hover:border-stone-300 hover:text-stone-600'
+                  }`}
+              >
+                {meta && <i className={`fa-solid ${meta.icon}`}></i>}
+                {cat}
+                <span className={`px-2 py-0.5 rounded-full text-[9px] ${isActive ? 'bg-white/20' : 'bg-stone-100'}`}>
+                  {cat === 'ALL'
+                    ? FLOWER_CATALOG.length
+                    : FLOWER_CATALOG.filter(f => f.category === catKey).length}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </header>
 
-      {/* Grid Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-32">
-        {filteredFlowers.map((flower) => {
-          const isSoldOut = flower.stock <= 0;
-          return (
-            <div
-              key={flower.id}
-              className={`flex flex-col space-y-12 group transition-all duration-500 cursor-pointer ${isSoldOut ? 'opacity-40 grayscale pointer-events-none' : 'hover:scale-[1.01]'}`}
-              onClick={() => setSelectedFlower(flower)}
-            >
-              {/* Image Container */}
-              <div className="aspect-[1.5] bg-stone-100 rounded-[5rem] overflow-hidden relative shadow-sm group-hover:shadow-3xl transition-all duration-1000 ring-1 ring-stone-100">
-                <img
-                  src={flower.image}
-                  alt={flower.name}
-                  loading="lazy"
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[12s] group-hover:scale-110"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1526047932273-341f2a7631f9?q=80&w=800&fit=crop';
-                  }}
-                />
-
-                {isSoldOut && (
-                  <div className="absolute inset-0 bg-stone-950/20 backdrop-blur-sm flex items-center justify-center z-10">
-                    <span className="bg-white/95 px-10 py-4 rounded-full text-[12px] font-black uppercase tracking-[0.4em] text-stone-900 shadow-2xl">
-                      Sold Out
-                    </span>
+      {/* Categorized Sections View */}
+      {flowersByCategory ? (
+        <div className="space-y-24">
+          {flowersByCategory.map(({ category, flowers }) => {
+            const meta = categoryMeta[category];
+            return (
+              <section key={category} className="space-y-10">
+                {/* Category Header */}
+                <div className="flex items-center gap-6 border-b border-stone-100 pb-8">
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg bg-gradient-to-br ${meta.gradient} text-white`}>
+                    <i className={`fa-solid ${meta.icon} text-xl`}></i>
                   </div>
-                )}
-
-                {/* Hover Action Overlay */}
-                <div className="absolute inset-0 bg-stone-900/0 group-hover:bg-stone-900/10 transition-colors flex items-center justify-center">
-                  <span className="opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500 bg-white text-stone-900 px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-2xl">
-                    View Details <i className="fa-solid fa-arrow-right ml-2"></i>
-                  </span>
-                </div>
-              </div>
-
-              {/* Typography Block */}
-              <div className="px-10 space-y-10">
-                <div className="flex justify-between items-start">
-                  <div className="space-y-4">
-                    <h3 className="text-5xl md:text-6xl font-bold serif text-stone-900 tracking-tight leading-none">
-                      {flower.name}
-                    </h3>
-                    <p className="text-[14px] font-bold uppercase text-stone-300 tracking-[0.5em] block font-sans">
-                      {flower.scientificName}
-                    </p>
+                  <div className="flex-1">
+                    <h3 className="text-3xl font-bold serif italic text-stone-900">{meta.title}</h3>
+                    <p className="text-stone-400 text-sm font-light mt-1">{meta.description}</p>
                   </div>
-
-                  <span className="text-[2.5rem] font-bold serif italic text-pink-300 leading-none transform translate-y-3 shrink-0">
-                    ${flower.price.toFixed(2)}
+                  <span className="text-[11px] font-black uppercase tracking-[0.3em] text-stone-300 bg-stone-50 px-4 py-2 rounded-full">
+                    {flowers.length} {flowers.length === 1 ? 'variety' : 'varieties'}
                   </span>
                 </div>
 
-                <p className="text-2xl text-stone-300 font-light italic leading-relaxed max-w-2xl serif">
-                  "{flower.careInstructions}"
-                </p>
-
-                <div className="flex flex-wrap gap-4 pt-6 border-t border-stone-50">
-                  <div className="bg-stone-100 text-stone-500 text-[11px] font-black uppercase tracking-[0.2em] px-8 py-3 rounded-full flex items-center gap-3">
-                    <div className="w-1.5 h-1.5 bg-stone-300 rounded-full"></div>
-                    {flower.origin}
-                  </div>
-                  <div className="bg-white border border-stone-100 text-stone-200 text-[11px] font-black uppercase tracking-[0.2em] px-8 py-3 rounded-full">
-                    {flower.season}
-                  </div>
+                {/* Flower Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                  {flowers.map((flower) => (
+                    <FlowerCard key={flower.id} flower={flower} />
+                  ))}
                 </div>
-              </div>
+              </section>
+            );
+          })}
+        </div>
+      ) : (
+        /* Flat Grid View (when filtering or searching) */
+        <div className="space-y-8">
+          {searchQuery && (
+            <p className="text-stone-400 text-sm">
+              {filteredFlowers.length} {filteredFlowers.length === 1 ? 'result' : 'results'} for "{searchQuery}"
+            </p>
+          )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {filteredFlowers.map((flower) => (
+              <FlowerCard key={flower.id} flower={flower} />
+            ))}
+          </div>
+          {filteredFlowers.length === 0 && (
+            <div className="text-center py-24 text-stone-300 space-y-4">
+              <i className="fa-solid fa-search text-5xl"></i>
+              <p className="text-xl serif italic">No flowers found</p>
+              <button
+                onClick={() => { setSearchQuery(''); setActiveFilter('All'); }}
+                className="text-pink-500 text-sm font-bold hover:text-pink-600 transition-colors"
+              >
+                Clear filters →
+              </button>
             </div>
-          );
-        })}
-      </div>
+          )}
+        </div>
+      )}
 
       {/* Flower Detail Modal */}
       <FlowerDetailModal
@@ -385,6 +650,7 @@ const HomeView: React.FC = () => {
 
 const MembershipView: React.FC = () => {
   const [joinedTier, setJoinedTier] = useState<string | null>(null);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
   const { showToast } = useToast();
 
   const handleJoin = (tierName: string) => {
@@ -392,8 +658,30 @@ const MembershipView: React.FC = () => {
     showToast(`Thank you for your interest in ${tierName}! We'll be in touch soon.`, 'success');
   };
 
+  const testimonials = [
+    { name: 'Sarah Mitchell', role: 'Wedding Planner, NYC', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop', quote: 'The Designer Pro membership has transformed my business. Access to exclusive varieties and 20% savings on every order.', tier: 'Designer Pro' },
+    { name: 'James Chen', role: 'Floral Studio Owner', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop', quote: 'Farm-to-shop logistics mean my arrangements are always fresh. The quality difference is immediately noticeable.', tier: 'Distributor' },
+    { name: 'Emily Rose', role: 'Home Enthusiast', image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop', quote: "I look forward to my monthly bouquet every time. It's like a little gift to myself that brightens my whole week.", tier: 'Enthusiast' }
+  ];
+
+  const faqs = [
+    { q: 'Can I cancel my membership anytime?', a: 'Yes! All memberships are month-to-month with no long-term commitment.' },
+    { q: 'When will I receive my monthly bouquet?', a: 'Bouquets ship on the 1st of each month and arrive within 2-3 business days.' },
+    { q: 'Do discounts apply to custom arrangements?', a: 'Member discounts apply to all catalog items and custom studio arrangements.' },
+    { q: 'What exclusive varieties are available?', a: 'Members get early access to seasonal rarities, imported specimens, and limited-edition preserved botanicals.' }
+  ];
+
+  const comparisonFeatures = [
+    { feature: 'Monthly Bouquet', enthusiast: true, designer: true, distributor: false },
+    { feature: 'Free Shipping', enthusiast: '$75+', designer: 'Always', distributor: 'Always' },
+    { feature: 'Catalog Discount', enthusiast: '5%', designer: '20%', distributor: '50%' },
+    { feature: 'Exclusive Varieties', enthusiast: false, designer: true, distributor: true },
+    { feature: 'Design Consultations', enthusiast: false, designer: '2/mo', distributor: 'Unlimited' },
+    { feature: 'Bulk Ordering', enthusiast: false, designer: false, distributor: true }
+  ];
+
   return (
-    <div className="pt-32 pb-24 px-8 md:px-12 max-w-7xl mx-auto animate-fade-in space-y-24">
+    <div className="pt-32 pb-24 px-8 md:px-12 max-w-7xl mx-auto animate-fade-in space-y-32">
       <div className="text-center space-y-6 max-w-3xl mx-auto">
         <span className="text-pink-500 text-xs font-black uppercase tracking-[0.5em] block">Professional Partnerships</span>
         <h2 className="text-6xl md:text-8xl font-bold serif italic text-stone-900 tracking-tighter leading-none">The Bloom Club.</h2>
@@ -478,6 +766,69 @@ const MembershipView: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Feature Comparison Table */}
+      <section className="space-y-10">
+        <div className="text-center space-y-4">
+          <span className="text-pink-500 text-[10px] font-black uppercase tracking-[0.4em]">Compare Plans</span>
+          <h3 className="text-4xl font-bold serif italic text-stone-900">Feature Comparison</h3>
+        </div>
+        <div className="bg-white rounded-[2rem] border border-stone-100 overflow-hidden shadow-sm">
+          <div className="grid grid-cols-4 text-center text-[10px] font-black uppercase tracking-widest bg-stone-50 border-b border-stone-100">
+            <div className="p-6 text-stone-400">Feature</div>
+            <div className="p-6 text-stone-600">Enthusiast</div>
+            <div className="p-6 text-pink-500">Designer Pro</div>
+            <div className="p-6 text-stone-600">Distributor</div>
+          </div>
+          {comparisonFeatures.map((row, i) => (
+            <div key={i} className={`grid grid-cols-4 text-center text-sm ${i % 2 === 0 ? 'bg-white' : 'bg-stone-50/50'} border-b border-stone-50 last:border-0`}>
+              <div className="p-5 text-left text-stone-700 font-medium">{row.feature}</div>
+              <div className="p-5 flex items-center justify-center">{row.enthusiast === true ? <i className="fa-solid fa-check text-green-500"></i> : row.enthusiast === false ? <i className="fa-solid fa-minus text-stone-200"></i> : <span className="text-stone-600 font-medium">{row.enthusiast}</span>}</div>
+              <div className="p-5 flex items-center justify-center bg-pink-50/30">{row.designer === true ? <i className="fa-solid fa-check text-green-500"></i> : row.designer === false ? <i className="fa-solid fa-minus text-stone-200"></i> : <span className="text-pink-600 font-bold">{row.designer}</span>}</div>
+              <div className="p-5 flex items-center justify-center">{row.distributor === true ? <i className="fa-solid fa-check text-green-500"></i> : row.distributor === false ? <i className="fa-solid fa-minus text-stone-200"></i> : <span className="text-stone-600 font-medium">{row.distributor}</span>}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="space-y-10">
+        <div className="text-center space-y-4">
+          <span className="text-pink-500 text-[10px] font-black uppercase tracking-[0.4em]">Member Stories</span>
+          <h3 className="text-4xl font-bold serif italic text-stone-900">Loved by Thousands</h3>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {testimonials.map((t, i) => (
+            <div key={i} className="bg-white rounded-[2rem] border border-stone-100 p-8 space-y-6 shadow-sm hover:shadow-lg transition-all">
+              <div className="flex items-center gap-4">
+                <img src={t.image} alt={t.name} className="w-14 h-14 rounded-full object-cover" />
+                <div><p className="font-bold text-stone-900">{t.name}</p><p className="text-xs text-stone-400">{t.role}</p></div>
+              </div>
+              <p className="text-stone-600 text-sm font-light italic leading-relaxed">"{t.quote}"</p>
+              <span className="inline-block bg-stone-100 text-stone-500 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider">{t.tier} Member</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="max-w-3xl mx-auto space-y-10">
+        <div className="text-center space-y-4">
+          <span className="text-pink-500 text-[10px] font-black uppercase tracking-[0.4em]">Questions?</span>
+          <h3 className="text-4xl font-bold serif italic text-stone-900">Frequently Asked</h3>
+        </div>
+        <div className="space-y-4">
+          {faqs.map((faq, i) => (
+            <div key={i} className="bg-white rounded-2xl border border-stone-100 overflow-hidden shadow-sm">
+              <button onClick={() => setOpenFaq(openFaq === i ? null : i)} className="w-full px-8 py-6 flex justify-between items-center text-left hover:bg-stone-50 transition-colors">
+                <span className="font-bold text-stone-900">{faq.q}</span>
+                <i className={`fa-solid fa-chevron-down text-stone-400 transition-transform duration-300 ${openFaq === i ? 'rotate-180' : ''}`}></i>
+              </button>
+              {openFaq === i && <div className="px-8 pb-6 text-stone-600 text-sm font-light animate-fade-in">{faq.a}</div>}
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 };
@@ -571,6 +922,20 @@ const App: React.FC = () => {
                     onBack={() => window.history.back()}
                   />
                 } />
+                <Route path="*" element={
+                  <div className="pt-32 pb-24 px-8 min-h-screen flex items-center justify-center">
+                    <div className="text-center space-y-8 max-w-lg animate-fade-in">
+                      <div className="w-24 h-24 bg-pink-100 rounded-full flex items-center justify-center mx-auto">
+                        <i className="fa-solid fa-flower text-4xl text-pink-500"></i>
+                      </div>
+                      <h1 className="text-7xl font-bold serif italic text-stone-900">404</h1>
+                      <p className="text-xl text-stone-500 font-light">This bloom has wilted. The page you're looking for doesn't exist.</p>
+                      <Link to="/" className="inline-flex items-center gap-3 px-8 py-4 bg-stone-900 text-white rounded-2xl font-bold hover:bg-pink-600 transition-all shadow-xl">
+                        <i className="fa-solid fa-home"></i> Return Home
+                      </Link>
+                    </div>
+                  </div>
+                } />
               </Routes>
             </main>
 
@@ -650,9 +1015,9 @@ const App: React.FC = () => {
               </div>
             )}
 
-            <footer className="py-24 border-t border-stone-100 bg-white">
-              <div className="max-w-7xl mx-auto px-12 grid grid-cols-1 md:grid-cols-4 gap-16">
-                <div className="col-span-1 md:col-span-2 space-y-8">
+            <footer className="py-20 border-t border-stone-100 bg-gradient-to-b from-white to-stone-50">
+              <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-16">
+                <div className="col-span-1 md:col-span-2 space-y-6">
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 bg-stone-900 rounded-xl flex items-center justify-center text-white">
                       <i className="fa-solid fa-leaf transform -rotate-12"></i>
@@ -660,28 +1025,37 @@ const App: React.FC = () => {
                     <h1 className="text-2xl font-bold serif italic text-stone-900">Petal & Prose</h1>
                   </div>
                   <p className="text-stone-400 text-sm max-w-sm font-light leading-relaxed">The global standard for curated floral distribution. Architecting beauty for every variety and style since 2025.</p>
+                  <div className="flex gap-3">
+                    <a href="#" className="w-10 h-10 bg-stone-100 rounded-full flex items-center justify-center text-stone-400 hover:bg-pink-500 hover:text-white transition-all"><i className="fa-brands fa-instagram"></i></a>
+                    <a href="#" className="w-10 h-10 bg-stone-100 rounded-full flex items-center justify-center text-stone-400 hover:bg-pink-500 hover:text-white transition-all"><i className="fa-brands fa-pinterest"></i></a>
+                    <a href="#" className="w-10 h-10 bg-stone-100 rounded-full flex items-center justify-center text-stone-400 hover:bg-pink-500 hover:text-white transition-all"><i className="fa-brands fa-tiktok"></i></a>
+                  </div>
                 </div>
 
-                <div className="space-y-6">
-                  <h4 className="text-[10px] font-black uppercase tracking-widest text-stone-900">Distributor</h4>
-                  <ul className="space-y-4 text-sm text-stone-400 font-light">
-                    <li><Link to="/catalog" className="hover:text-stone-900 transition-colors">Bulk Catalog</Link></li>
-                    <li><Link to="/design" className="hover:text-stone-900 transition-colors">Custom Studio</Link></li>
-                    <li><Link to="/membership" className="hover:text-stone-900 transition-colors">B2B Partnership</Link></li>
+                <div className="space-y-5">
+                  <h4 className="text-[10px] font-black uppercase tracking-widest text-stone-900">Explore</h4>
+                  <ul className="space-y-3 text-sm text-stone-400 font-light">
+                    <li><Link to="/catalog" className="hover:text-stone-900 transition-colors flex items-center gap-2"><i className="fa-solid fa-leaf text-xs"></i> Catalog</Link></li>
+                    <li><Link to="/design" className="hover:text-stone-900 transition-colors flex items-center gap-2"><i className="fa-solid fa-wand-magic-sparkles text-xs"></i> Custom Studio</Link></li>
+                    <li><Link to="/membership" className="hover:text-stone-900 transition-colors flex items-center gap-2"><i className="fa-solid fa-crown text-xs"></i> Membership</Link></li>
+                    <li><Link to="/checkout" className="hover:text-stone-900 transition-colors flex items-center gap-2"><i className="fa-solid fa-bag-shopping text-xs"></i> Checkout</Link></li>
                   </ul>
                 </div>
 
-                <div className="space-y-6">
-                  <h4 className="text-[10px] font-black uppercase tracking-widest text-stone-900">Assistance</h4>
-                  <ul className="space-y-4 text-sm text-stone-400 font-light">
-                    <li className="hover:text-stone-900 transition-colors cursor-pointer">Logistics Guide</li>
-                    <li className="hover:text-stone-900 transition-colors cursor-pointer">Shipping Network</li>
-                    <li className="hover:text-stone-900 transition-colors cursor-pointer">Quality Control</li>
-                  </ul>
+                <div className="space-y-5">
+                  <h4 className="text-[10px] font-black uppercase tracking-widest text-stone-900">Newsletter</h4>
+                  <p className="text-stone-400 text-sm font-light">Get seasonal updates & exclusive offers.</p>
+                  <div className="flex gap-2">
+                    <input type="email" placeholder="your@email.com" className="flex-1 px-4 py-3 bg-white rounded-xl border border-stone-100 text-sm focus:border-pink-300 focus:ring-0 outline-none" />
+                    <button className="px-4 py-3 bg-stone-900 text-white rounded-xl hover:bg-pink-600 transition-all"><i className="fa-solid fa-arrow-right"></i></button>
+                  </div>
                 </div>
               </div>
-              <div className="max-w-7xl mx-auto px-12 pt-24 mt-24 border-t border-stone-50 text-center">
-                <p className="text-[9px] font-black uppercase tracking-[0.6em] text-stone-300">Petal & Prose Artisan Collective © 2025</p>
+              <div className="max-w-7xl mx-auto px-6 md:px-12 pt-12 mt-12 border-t border-stone-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <p className="text-[9px] font-black uppercase tracking-[0.4em] text-stone-300">Petal & Prose Artisan Collective © 2025</p>
+                <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="group flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-stone-400 hover:text-stone-900 transition-colors">
+                  Back to Top <i className="fa-solid fa-arrow-up group-hover:-translate-y-1 transition-transform"></i>
+                </button>
               </div>
             </footer>
           </div>

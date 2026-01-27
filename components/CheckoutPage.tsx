@@ -21,10 +21,18 @@ interface OrderForm {
     state: string;
     zipCode: string;
     deliveryOption: DeliveryOption;
+    deliveryDate: string;
+    deliveryTime: string;
     giftMessage: string;
     isGift: boolean;
     saveInfo: boolean;
 }
+
+const TIME_SLOTS = [
+    { id: 'morning', label: 'Morning', range: '9:00 AM - 12:00 PM' },
+    { id: 'afternoon', label: 'Afternoon', range: '12:00 PM - 4:00 PM' },
+    { id: 'evening', label: 'Evening', range: '4:00 PM - 8:00 PM' }
+];
 
 const DELIVERY_OPTIONS = [
     { id: 'standard', name: 'Standard Delivery', price: 0, description: '3-5 business days', icon: 'fa-truck' },
@@ -49,6 +57,8 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onOrderComplete, onBa
         state: '',
         zipCode: '',
         deliveryOption: 'standard',
+        deliveryDate: '',
+        deliveryTime: 'afternoon',
         giftMessage: '',
         isGift: false,
         saveInfo: false
@@ -264,8 +274,8 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onOrderComplete, onBa
                                     type="button"
                                     onClick={() => updateForm('deliveryOption', option.id)}
                                     className={`p-6 rounded-2xl border-2 transition-all text-left ${form.deliveryOption === option.id
-                                            ? 'border-pink-500 bg-pink-50'
-                                            : 'border-stone-100 bg-stone-50 hover:border-stone-200'
+                                        ? 'border-pink-500 bg-pink-50'
+                                        : 'border-stone-100 bg-stone-50 hover:border-stone-200'
                                         }`}
                                 >
                                     <div className="flex items-start gap-4">
@@ -286,11 +296,59 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cart, onOrderComplete, onBa
                         </div>
                     </section>
 
-                    {/* Shipping Address */}
+                    {/* Delivery Date/Time Selection */}
                     {form.deliveryOption !== 'pickup' && (
                         <section className="bg-white rounded-[2rem] border border-stone-100 p-8 space-y-6 shadow-sm animate-fade-in">
                             <h2 className="text-xl font-bold serif italic text-stone-900 flex items-center gap-3">
                                 <div className="w-8 h-8 bg-stone-900 rounded-lg flex items-center justify-center text-white text-sm">3</div>
+                                Preferred Delivery Date
+                            </h2>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-stone-400">Delivery Date</label>
+                                    <input
+                                        type="date"
+                                        value={form.deliveryDate}
+                                        onChange={(e) => updateForm('deliveryDate', e.target.value)}
+                                        min={new Date(Date.now() + (form.deliveryOption === 'express' ? 86400000 : 3 * 86400000)).toISOString().split('T')[0]}
+                                        className="w-full px-6 py-4 bg-stone-50 rounded-xl border border-transparent focus:border-pink-400 focus:ring-0 outline-none transition-all text-stone-900"
+                                    />
+                                    <p className="text-xs text-stone-400">
+                                        {form.deliveryOption === 'express'
+                                            ? 'Express: Available as soon as tomorrow'
+                                            : 'Standard: 3-5 business days from today'}
+                                    </p>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-stone-400">Time Window</label>
+                                    <div className="grid grid-cols-3 gap-2">
+                                        {TIME_SLOTS.map((slot) => (
+                                            <button
+                                                key={slot.id}
+                                                type="button"
+                                                onClick={() => updateForm('deliveryTime', slot.id)}
+                                                className={`p-3 rounded-xl border-2 transition-all text-center ${form.deliveryTime === slot.id
+                                                    ? 'border-pink-500 bg-pink-50'
+                                                    : 'border-stone-100 bg-stone-50 hover:border-stone-200'
+                                                    }`}
+                                            >
+                                                <p className="font-bold text-stone-900 text-xs">{slot.label}</p>
+                                                <p className="text-[10px] text-stone-400 mt-1">{slot.range}</p>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    )}
+
+                    {/* Shipping Address */}
+                    {form.deliveryOption !== 'pickup' && (
+                        <section className="bg-white rounded-[2rem] border border-stone-100 p-8 space-y-6 shadow-sm animate-fade-in">
+                            <h2 className="text-xl font-bold serif italic text-stone-900 flex items-center gap-3">
+                                <div className="w-8 h-8 bg-stone-900 rounded-lg flex items-center justify-center text-white text-sm">4</div>
                                 Shipping Address
                             </h2>
 
